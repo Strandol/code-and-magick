@@ -1,12 +1,12 @@
 {
-  "name": "code-and-magick",
+  "name": "dvalian",
   "version": "0.1.0",
   "private": true,
   "description": "Личный проект «Код и Магия» от HTML Academy",
   "author": "Илья Коваленко",
   "repository": {
     "type": "git",
-    "url": "git@github.com:htmlacademy-javascript/35690-code-and-magick.git"
+    "url": "git+ssh://git@github.com/htmlacademy-javascript/35690-code-and-magick.git"
   },
   "bugs": {
     "url": "https://github.com/htmlacademy-javascript/35690-code-and-magick/issues"
@@ -15,10 +15,15 @@
   "devDependencies": {
     "eslint": "2.4.0"
   },
+  "dependencies": {
+    "browser-cookies": "1.0.8"
+  },
   "scripts": {
     "test": "eslint build/js"
   },
   "engines": {
     "node": "^5.0.0"
-  }
+  },
+  "main": "index.js",
+  "license": "ISC"
 }
