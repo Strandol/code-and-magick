@@ -20,7 +20,7 @@
   },
   "scripts": {
     "test": "eslint build/js"
-  }
+  },
   "engines": {
     "node": "^5.0.0"
   },
