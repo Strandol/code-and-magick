@@ -6,19 +6,24 @@
   "author": "Илья Коваленко",
   "repository": {
     "type": "git",
-    "url": "git@github.com:htmlacademy-javascript/35690-code-and-magick.git"
+    "url": "git@github.com:Strandol/code-and-magick.git"
   },
   "bugs": {
-    "url": "https://github.com/htmlacademy-javascript/35690-code-and-magick/issues"
+    "url": "https://github.com/Strandol/code-and-magick/issues"
   },
-  "homepage": "https://github.com/htmlacademy-javascript/35690-code-and-magick",
+  "homepage": "https://github.com/Strandol/code-and-magick",
   "devDependencies": {
     "eslint": "2.4.0"
+  },
+  "dependencies": {
+    "browser-cookies": "1.0.8"
   },
   "scripts": {
     "test": "eslint build/js"
   },
   "engines": {
     "node": "^5.0.0"
-  }
+  },
+  "main": "index.js",
+  "license": "ISC"
 }
