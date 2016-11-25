@@ -66,7 +66,7 @@
     <span class="review-form-close">&times;</span>
 
     <fieldset class="review-form-group review-form-group-mark">
-      <span class="review-form-label">Оценка</label><br>
+      <span class="review-form-label">Оценка</span><br>
       <input type="radio" name="review-mark" id="review-mark-1" value="1"><label class="review-mark-label review-mark-label-1" for="review-mark-2">1</label>
       <input type="radio" name="review-mark" id="review-mark-2" value="2"><label class="review-mark-label review-mark-label-2" for="review-mark-2">2</label>
       <input type="radio" name="review-mark" id="review-mark-3" value="3" checked><label class="review-mark-label review-mark-label-3" for="review-mark-3">3</label>
@@ -76,12 +76,12 @@
 
     <fieldset class="review-form-group">
       <label for="review-name" class="review-form-label">Имя</label><br>
-      <input type="text" name="review-name" id="review-name" class="review-form-field review-form-field-name">
+      <input type="text" name="review-name" id="review-name" class="review-form-field review-form-field-name" required>
     </fieldset>
 
     <fieldset class="review-form-group">
       <label for="review-text" class="review-form-label">Отзыв</label><br>
-      <textarea name="review-text" id="review-text" class="review-form-field review-form-field-text" cols="32" rows="8"></textarea>
+      <textarea name="review-text" id="review-text" class="review-form-field review-form-field-text" cols="32" rows="8" required></textarea>
     </fieldset>
 
     <div class="review-form-controls">
@@ -108,7 +108,10 @@
   </article>
 </template>
 
+<script src="js/cookies.js"></script>
 <script src="js/form.js"></script>
+<script src="data/reviews.js"></script>
+<script src="js/reviews.js"></script>
 
 </body>
 </html>

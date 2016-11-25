@@ -1,6 +1,6 @@
 # Проект «Code and Magick»
 
-* Студент: [Константин Куршин](https://htmlacademy.ru/profile/id36515).
+* Студент: [Илья Коваленко]
 
 
 --
