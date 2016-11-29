@@ -9,15 +9,12 @@
     "url": "git@github.com:Strandol/code-and-magick.git"
   },
   "bugs": {
-<<<<<<< HEAD
     "url": "https://github.com/strandol/code-and-magick/issues"
   },
   "homepage": "https://github.com/strandol/code-and-magick",
-=======
     "url": "https://github.com/Strandol/code-and-magick/issues"
   },
   "homepage": "https://github.com/Strandol/code-and-magick",
->>>>>>> d129645974d491ddbdc788e177ae32a339c017ed
   "devDependencies": {
     "eslint": "2.4.0"
   },

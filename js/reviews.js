@@ -1,62 +1,60 @@
-'use strict';
+"use strict";
+(function () {
 
-(function() {
-  var ratingStructure = {
-    '1': 'review-rating-one',
-    '2': 'review-rating-two',
-    '3': 'review-rating-three',
-    '4': 'review-rating-four',
-    '5': 'review-rating-five'
+  var rating_classname = {
+    1: "review-rating-one",
+    2: "review-rating-two",
+    3: "review-rating-three",
+    4: "review-rating-four",
+    5: "review-rating-five"
   };
 
-  var IMAGE_FAILURE_TIMEOUT = 8000;
+  var IMAGE_FAILURE_TIMEOUT = 10000;
 
-  var reviewsFilter = document.querySelector('.reviews-filter');
-  var reviewsList = document.querySelector('.reviews-list');
-  var reviewTemplate = document.getElementById('review-template');
-  var reviewsFragment = document.createDocumentFragment();
+  var reviews_filter = document.querySelector(".reviews-filter");
+  var review_template = document.getElementById("review-template");
+  var reviews_container = document.querySelector(".reviews-list");
 
-  hideElement(reviewsFilter);
+  var review_fragment = document.createDocumentFragment();
 
-  reviews.forEach(function(review) {
-    var newReview = reviewTemplate.content.children[0].cloneNode(true);
-    var rating = newReview.querySelector('.review-rating');
-    var comment = newReview.querySelector('.review-text');
-    var avatarStub = newReview.querySelector('.review-author');
+  reviews_filter.classList.add("invisible");
 
-    rating.classList.add(ratingStructure[review.rating]);
-    comment.textContent = review.description;
+  reviews.forEach(function (review, i) {
+    var new_review = review_template.content.children[0].cloneNode(true);
 
-    reviewsFragment.appendChild(newReview);
+    var original_image = new_review.querySelector(".review-author");
 
-    if (review.author.picture) {
-      loadPicture(review, newReview, avatarStub);
+    original_image.title = review["author"]["name"];
+    new_review.querySelector(".review-rating").classList.add(rating_classname[review["rating"]]);
+    new_review.querySelector(".review-text").textContent = review["description"];
+
+    if (review["author"]["picture"]) {
+      var author_image = new Image();
+
+      author_image.src = review["author"]["picture"];
+
+      var image_load_timeout = setTimeout(function () {
+        new_review.classList.add("review-load-failure");
+      }, IMAGE_FAILURE_TIMEOUT);
+
+      author_image.onload = function () {
+        author_image.classList.add('review-author');
+        author_image.title = review["author"]["name"];
+        author_image.style.width = "124px";
+        author_image.style.height = "124px";
+        new_review.replaceChild(author_image, original_image);
+        clearTimeout(image_load_timeout);
+      };
+
+      author_image.onerror = function () {
+        new_review.classList.add("review-load-failure");
+      };
     }
+
+    review_fragment.appendChild(new_review);
   });
 
-  reviewsList.appendChild(reviewsFragment);
+  reviews_container.appendChild(review_fragment);
+  reviews_filter.classList.remove("invisible");
 
-  function hideElement(elem) {
-    elem.classList.add('invisible');
-  }
-
-  function loadPicture(review, newReview, avatarStub) {
-    var avatar = new Image();
-    avatar.classList.add('review-author');
-    avatar.src = review.author.picture;
-
-    var imageLoadTimeout = setTimeout(function() {
-      newReview.classList.add('review-load-failure');
-    }, IMAGE_FAILURE_TIMEOUT);
-
-    avatar.onerror = function() {
-      newReview.classList.add('review-load-failure');
-    };
-
-    avatar.onload = function() {
-      avatar.style.backgroundSize = '124px 124px';
-      newReview.replaceChild(avatar, avatarStub);
-      clearTimeout(imageLoadTimeout);
-    }
-  }
-}());
+})();
