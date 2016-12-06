@@ -2,3 +2,4 @@ gosha/
 node_modules/
 .idea
 .sublime*
+npm-debug.log
