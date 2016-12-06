@@ -40,8 +40,8 @@
 
   function loadReviewsList() {
       initFilters();
-      loadReviews(loadData);
       setScrollEnabled();
+      loadReviews(loadData);
       renderReviews(reviews, 0);
   }
 
@@ -95,7 +95,7 @@
       setActiveFilter(filter);
       var btn = document.getElementById(filter);
       btn.checked = true;
-      renderReviews(loadedReviews);
+      renderReviews(reviews);
   }
   
   function renderReviews(reviews, page, replace) {
@@ -201,11 +201,11 @@
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(function() {
 
-              if(!isNextPageAvaliable(reviews, currentPage, PAGE_SIZE)){
+              if(!isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
                   setMoreRevBtnDisabled();
               }
 
-              if(isBottomReached() && isNextPageAvaliable(reviews, currentPage, PAGE_SIZE)){
+              if(isBottomReached() && isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
                   currentPage++;
                   renderReviews(filteredReviews, currentPage);
               }
