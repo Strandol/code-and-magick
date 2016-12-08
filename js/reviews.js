@@ -42,7 +42,6 @@
       initFilters();
       setScrollEnabled();
       loadReviews(loadData);
-      renderReviews(reviews, 0);
   }
 
   function initFilters() {
@@ -95,7 +94,6 @@
       setActiveFilter(filter);
       var btn = document.getElementById(filter);
       btn.checked = true;
-      renderReviews(reviews);
   }
   
   function renderReviews(reviews, page, replace) {
@@ -200,14 +198,11 @@
       window.addEventListener('scroll', function (event) {
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(function() {
-
-              if(!isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
-                  setMoreRevBtnDisabled();
-              }
-
+              currentPage++;
               if(isBottomReached() && isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
-                  currentPage++;
                   renderReviews(filteredReviews, currentPage);
+              } else {
+                  setMoreRevBtnDisabled();
               }
           }, 100);
       })
@@ -219,7 +214,7 @@
   }
 
   function isNextPageAvaliable(reviews, currentPage, pageSize) {
-      return currentPage < Math.floor(reviews.length / pageSize);
+      return currentPage < Math.ceil(reviews.length / pageSize);
   }
 
   function setMoreRevBtnEnabled() {
