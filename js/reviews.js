@@ -198,10 +198,13 @@
       window.addEventListener('scroll', function (event) {
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(function() {
-              currentPage++;
+
               if(isBottomReached() && isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
+                  currentPage++;
                   renderReviews(filteredReviews, currentPage);
-              } else {
+              }
+
+              if(!isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)){
                   setMoreRevBtnDisabled();
               }
           }, 100);
