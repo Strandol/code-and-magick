@@ -231,7 +231,7 @@
   }
 
   function displayMoreReviews() {
-      currentPage++;
       renderReviews(filteredReviews, currentPage);
+      currentPage++;
   }
 }());
