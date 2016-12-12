@@ -21,7 +21,7 @@
         }, 100);
 
         if (visibility != false) {
-            clouds.style.backgroundPosition = (clouds.getBoundingClientRect().top - clouds.offsetWidth / 2) + 'px 0px';
+            clouds.style.backgroundPosition = (clouds.getBoundingClientRect().top - clouds.offsetWidth*2 - document.documentElement.clientWidth) + 'px 0px';
         }
     });
 }());
