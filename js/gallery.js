@@ -11,6 +11,26 @@
     var galleryOverlay = document.querySelector('.overlay-gallery');
     var galleryCloseBtn = document.querySelector('.overlay-gallery-close');
 
+    var Gallery = new function () {
+        this.setPhotos = function () {
+
+        };
+
+        this.setCurrentPhoto = function () {
+
+        };
+
+        this.show = function () {
+
+        };
+
+        this.hide = function () {
+
+        };
+
+
+    };
+
     galleryContainer.addEventListener('click', function(event) {
         event.preventDefault();
 
