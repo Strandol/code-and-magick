@@ -33,27 +33,35 @@
 
     galleryContainer.addEventListener('click', function(event) {
         event.preventDefault();
+        var element = event.target;
+        while(element){
+            if (element.classList.contains('photogallery-image')) {
+                showGalleryOverlay();
+                setCloseBtnHandler();
+                setKeyHandlers();
+                return;
+            }
 
-        if(event.target.parentNode.classList.contains('photogallery-image')) {
-            galleryOverlay.classList.remove('invisible');
-            setCloseBtnEnabled();
-            keyHandler();
+            element = element.parentElement;
         }
     });
-    
-    function keyHandler() {
-        window.addEventListener('keyup', keyPress);
+
+    function showGalleryOverlay() {
+        galleryOverlay.classList.remove('invisible');
+    }
+    function setKeyHandlers() {
+        window.addEventListener('keyup', keyHandlers);
     }
     
-    function setCloseBtnEnabled() {
+    function setCloseBtnHandler() {
         galleryCloseBtn.addEventListener('click', function(event) {
             event.preventDefault();
             galleryOverlay.classList.add('invisible');
-            window.removeEventListener('keyup', keyPress);
+            window.removeEventListener('keyup', keyHandlers);
         })
     }
 
-    function keyPress(event) {
+    function keyHandlers(event) {
         event.preventDefault();
 
         switch (event.keyCode) {

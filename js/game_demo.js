@@ -2,26 +2,28 @@
 
 (function() {
     var clouds = document.querySelector('.header-clouds');
-    var cloudsTimeout = 0;
-    var visibility = true;
 
-    var hideEvent = new Event('hide');
+    var timerId = 0;
+    var cloudsPositionX = 0;
 
-    clouds.addEventListener('hide', function () {
-        if (clouds.getBoundingClientRect().top < -clouds.offsetHeight) {
-            return false;
-        }
-        return true;
-    });
+    var moveClouds = new Event('move');
+    
+    clouds.addEventListener('move', move);
+
+    function move() {
+        cloudsPositionX = clouds.getBoundingClientRect().top;
+        clouds.style.backgroundPosition = cloudsPositionX + 'px 0px';
+    }
 
     window.addEventListener('scroll', function(event) {
-        clearTimeout(cloudsTimeout);
-        cloudsTimeout = setTimeout(function() {
-            visibility = clouds.dispatchEvent(hideEvent);
+        timerId = setTimeout(function() {
+            if(clouds.getBoundingClientRect().bottom < 0) {
+                clouds.removeEventListener('move', move);
+            } else {
+                clouds.addEventListener('move', move);
+            }
         }, 100);
 
-        if (visibility != false) {
-            clouds.style.backgroundPosition = (clouds.getBoundingClientRect().top - clouds.offsetWidth*2 - document.documentElement.clientWidth) + 'px 0px';
-        }
+        clouds.dispatchEvent(moveClouds);
     });
 }());
