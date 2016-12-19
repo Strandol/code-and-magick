@@ -17,7 +17,7 @@
 
     var reviewTemplate = document.getElementById('review-template');
     
-    Review.prototype.render = function (reviewsFragment) {
+    Review.prototype.render = function(reviewsFragment) {
         var newReview = reviewTemplate.content.children[0].cloneNode(true);
         var rating = newReview.querySelector('.review-rating');
         var comment = newReview.querySelector('.review-text');
