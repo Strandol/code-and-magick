@@ -31,8 +31,6 @@
         if (this._data.author.picture) {
             loadPicture(this, newReview, avatarStub);
         }
-
-
     };
 
     function loadPicture(review, newReview, avatarStub) {

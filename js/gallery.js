@@ -16,7 +16,6 @@
     var currentPhotoNumberLabel = galleryOverlay.querySelector('.preview-number-current');
 
     var Gallery = function() {
-
         this._photos = [];
         this._currentPhoto = null;
 
@@ -52,8 +51,6 @@
             keyLeft.removeEventListener('click', btnLeftKeyHandler);
             keyRight.removeEventListener('click', btnRightKeyHandler);
         };
-
-
     };
 
     var photoGallery = null;
