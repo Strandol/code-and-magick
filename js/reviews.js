@@ -45,14 +45,17 @@
 
   function initFilters() {
       reviewsFilter.addEventListener('click', function(event) {
-          if (event.target.classList.contains('reviews-filter-item')) {
+          if(event.target.classList.contains('reviews-filter-item')){
               setActiveFilter(event.target.htmlFor);
           }
       });
   }
 
   function setActiveFilter(filter) {
+      currentPage = 0;
       filteredReviews = getFilteredReviews(reviews, filter);
+      var btn = document.getElementById(filter);
+      btn.checked = true;
       renderReviews(filteredReviews, currentPage, true);
   }
 
@@ -63,7 +66,7 @@
 
       xhr.onreadystatechange = function(event) {
           var loadedXhr = event.target;
-          switch (loadedXhr.readyState) {
+          switch (loadedXhr.readyState){
               case XHR_STATE.DONE:
                   if (loadedXhr.status === 200){
                       var reviewsData = loadedXhr.response;
@@ -80,7 +83,7 @@
       };
 
     xhr.ontimeout = function() {
-      showFailure();
+        showFailure();
     };
 
     xhr.send();
@@ -88,15 +91,15 @@
 
   function loadData(loadedReviews) {
       reviews = loadedReviews;
+      reviews = reviews.map(function (review) {
+          return review = new Review(review);
+      });
       var filter = localStorage.getItem('filter') || 'reviews-all';
-      var btn = document.getElementById(filter);
       setActiveFilter(filter);
-      btn.checked = true;
   }
   
   function renderReviews(reviews, page, replace) {
       setMoreRevBtnEnabled();
-
       if(replace){
           reviewsContainer.innerHTML = '';
       }
@@ -104,20 +107,8 @@
       var from = page * PAGE_SIZE;
       var to = from + PAGE_SIZE;
 
-      reviews.slice(from, to).forEach(function(review) {
-          var newReview = reviewTemplate.content.children[0].cloneNode(true);
-          var rating = newReview.querySelector('.review-rating');
-          var comment = newReview.querySelector('.review-text');
-          var avatarStub = newReview.querySelector('.review-author');
-
-          rating.classList.add(ratingStructure[review.rating]);
-          comment.textContent = review.description;
-
-          reviewsFragment.appendChild(newReview);
-
-          if (review.author.picture) {
-              loadPicture(review, newReview, avatarStub);
-          }
+      reviews.slice(from,to).forEach(function(review) {
+          review.render(reviewsFragment);
       });
 
       reviewsContainer.appendChild(reviewsFragment);
@@ -129,36 +120,47 @@
       switch (filter) {
           case 'reviews-recent':
               filterReviews.sort(function(rev1, rev2) {
-                  var date1 = new Date(rev1.date);
-                  var date2 = new Date(rev2.date);
+                  var date1 = new Date(rev1._data.date);
+                  var date2 = new Date(rev2._data.date);
                   return compareElements(date2, date1);
               });
               break;
           case 'reviews-good':
-              filterReviews = filterReviews
-                  .filter(function(review) {
-                      return review.rating >= 3;
-                  })
-                  .sort(function(rev1, rev2) {
-                      return compareElements(rev2.rating, rev1.rating);
-                  });
+              for (var i = 0; i < filterReviews.length; i++) {
+                  if (filterReviews[i]._data.rating < 3) {
+                      filterReviews[i].unrender(filterReviews, i);
+                      i--;
+                  }
+              }
+
+              filterReviews = filterReviews.sort(function (rev1, rev2) {
+                      return compareElements(rev2._data.rating,rev1._data.rating);
+              });
+
               break;
           case 'reviews-bad':
+            for(i = 0; i < filterReviews.length; i++){
+              if(filterReviews[i]._data.rating > 2){
+                filterReviews[i].unrender(filterReviews, i);
+                i--;
+              }
+            }
+
+            filterReviews = filterReviews.sort(function(rev1, rev2) {
+                return compareElements(rev1._data.rating, rev2._data.rating);
+            });
+
+            break;
+          case 'reviews-popular':
               filterReviews = filterReviews
-                  .filter(function(review) {
-                      return review.rating <= 2;
-                  })
                   .sort(function(rev1, rev2) {
-                      return compareElements(rev1.rating, rev2.rating);
+                      return compareElements(rev2._data['review-rating'], rev1._data['review-rating']);
+                  })
+                  .filter(function(review) {
+                      return review._data.rating >= 3
                   });
               break;
-          case 'reviews-popular':
-              filterReviews.sort(function(rev1, rev2) {
-                  return compareElements(rev2['review-rating'], rev1['review-rating']);
-              });
-              break;
-          default:
-              break;
+          default: break;
       }
 
       localStorage.setItem('filter', filter);
@@ -176,26 +178,6 @@
   function hideElement(elem) {
       elem.classList.add('invisible');
   }
-
-  function loadPicture(review, newReview, avatarStub) {
-      var avatar = new Image();
-      avatar.classList.add('review-author');
-      avatar.src = review.author.picture;
-
-      var imageLoadTimeout = setTimeout(function() {
-          newReview.classList.add('review-load-failure');
-      }, REQUEST_FAILURE_TIMEOUT);
-
-      avatar.onerror = function() {
-          newReview.classList.add('review-load-failure');
-      };
-
-      avatar.onload = function() {
-          avatar.style.backgroundSize = '124px 124px';
-          newReview.replaceChild(avatar, avatarStub);
-          clearTimeout(imageLoadTimeout);
-      }
-  }
   
   function setScrollEnabled() {
       window.addEventListener('scroll', function(event) {
@@ -208,7 +190,6 @@
               if (!isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)) {
                   setMoreRevBtnDisabled();
               }
-              clearTimeout(timerId);
           }, 100);
       })
   }

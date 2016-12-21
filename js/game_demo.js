@@ -3,14 +3,12 @@
 (function() {
     var clouds = document.querySelector('.header-clouds');
 
-
     var moveClouds = new CustomEvent('move');
-    
+
     clouds.addEventListener('move', move);
 
     function move() {
         clouds.style.backgroundPosition = clouds.getBoundingClientRect().top  + (document.documentElement.clientWidth / 4) + 'px 0px';
-        console.log('move');
     }
 
     window.addEventListener('scroll', function(event) {
