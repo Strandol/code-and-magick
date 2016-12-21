@@ -60,9 +60,9 @@
 
         var element = event.target;
 
-        while(element){
+        while (element) {
             if (element.classList.contains('photogallery-image')) {
-                if (photoGallery === null){
+                if (photoGallery === null) {
                     var photos = document.querySelectorAll('.photogallery-image');
                     photoGallery = new Gallery();
                     photoGallery.setPhotos(photos);
@@ -91,8 +91,8 @@
         keyRight.addEventListener('click', btnRightKeyHandler);
     }
 
-    var btnRightKeyHandler = function(){
-        if (photoGallery._currentPhoto < photoGallery._photos.length-1) {
+    var btnRightKeyHandler = function() {
+        if (photoGallery._currentPhoto < photoGallery._photos.length - 1) {
             photoGallery._currentPhoto++;
         }
         photoGallery.setCurrentPhoto(photoGallery._currentPhoto);

@@ -11,7 +11,7 @@
         '5': 'review-rating-five'
     };
 
-    var Review = function (data) {
+    var Review = function(data) {
         this._data = data;
     };
 
@@ -53,7 +53,7 @@
         }
     }
     
-    Review.prototype.unrender = function (reviewsList, index) {
+    Review.prototype.unrender = function(reviewsList, index) {
         reviewsList.splice(index, 1);
     };
 
