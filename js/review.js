@@ -16,45 +16,62 @@
     };
 
     var reviewTemplate = document.getElementById('review-template');
-    
+
     Review.prototype.render = function(reviewsFragment) {
-        var newReview = reviewTemplate.content.children[0].cloneNode(true);
-        var rating = newReview.querySelector('.review-rating');
-        var comment = newReview.querySelector('.review-text');
-        var avatarStub = newReview.querySelector('.review-author');
+        this.newReview = reviewTemplate.content.children[0].cloneNode(true);
+        var rating = this.newReview.querySelector('.review-rating');
+        var comment = this.newReview.querySelector('.review-text');
+        var avatarStub = this.newReview.querySelector('.review-author');
 
         rating.classList.add(ratingStructure[this._data.rating]);
         comment.textContent = this._data.description;
 
-        reviewsFragment.appendChild(newReview);
+        reviewsFragment.appendChild(this.newReview);
 
         if (this._data.author.picture) {
-            loadPicture(this, newReview, avatarStub);
+            loadPicture.call(this, avatarStub);
         }
     };
 
-    function loadPicture(review, newReview, avatarStub) {
-        var avatar = new Image();
-        avatar.classList.add('review-author');
-        avatar.src = review._data.author.picture;
+    function loadPicture(avatarStub) {
+        var review = this.newReview;
+
+        this.avatar = new Image();
+        this.avatar.classList.add('review-author');
+        this.avatar.src = this._data.author.picture;
 
         var imageLoadTimeout = setTimeout(function() {
-            newReview.classList.add('review-load-failure');
+            review.classList.add('review-load-failure');
         }, REQUEST_FAILURE_TIMEOUT);
 
-        avatar.onerror = function() {
-            newReview.classList.add('review-load-failure');
+        Gallery.prototype.loadFailure = function() {
+            review.classList.add('review-load-failure');
         };
 
-        avatar.onload = function() {
-            avatar.style.backgroundSize = '124px 124px';
-            newReview.replaceChild(avatar, avatarStub);
+        this.avatar.addEventListener('error', Gallery.prototype.loadFailure);
+
+
+        var reviewAvatar = this.avatar;
+
+        Gallery.prototype.replaceImage = function() {
+            reviewAvatar.style.backgroundSize = '124px 124px';
+            review.replaceChild(reviewAvatar, avatarStub);
             clearTimeout(imageLoadTimeout);
-        }
+        };
+
+        this.avatar.addEventListener('load', Gallery.prototype.replaceImage);
     }
-    
+
+    Gallery.prototype.loadFailure = function() {
+        review.classList.add('review-load-failure');
+    };
+
     Review.prototype.unrender = function(reviewsList, index) {
         reviewsList.splice(index, 1);
+        if(this.avatar !== undefined){
+            this.avatar.removeEventListener('error', Gallery.prototype.loadFailure);
+            this.avatar.removeEventListener('load', Gallery.prototype.replaceImage);
+        }
     };
 
     window.Review = Review;
