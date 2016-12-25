@@ -1,14 +1,6 @@
 'use strict';
 
 (function() {
-    var ratingStructure = {
-        '1': 'review-rating-one',
-        '2': 'review-rating-two',
-        '3': 'review-rating-three',
-        '4': 'review-rating-four',
-        '5': 'review-rating-five'
-    };
-
     var XHR_STATE = {
         'UNSENT': 0,
         'OPENED': 1,
@@ -32,6 +24,7 @@
     var footerElement = document.querySelector('footer');
     var moreReviewsButton = document.querySelector('.reviews-controls-more');
 
+    var photoGallery = null;
     var currentPage = 0;
     var reviews;
 
@@ -160,7 +153,8 @@
                       return review._data.rating >= 3;
                   });
                 break;
-            default: break;
+            default:
+                break;
         }
 
         localStorage.setItem('filter', filter);
@@ -213,4 +207,6 @@
         renderReviews(filteredReviews, currentPage);
         currentPage++;
     }
+
+    window.photoGallery = photoGallery;
 }());
