@@ -23,41 +23,41 @@
         this._currentPhoto = 0;
 
         this._onCloseButtonClick = function() {
-            photoGallery.galleryOverlay.classList.add('invisible');
-            photoGallery.hide();
-        };
+            this.galleryOverlay.classList.add('invisible');
+            this.hide();
+        }.bind(this);
 
         this._onRightArrowClick = function() {
-            photoGallery._currentPhoto = photoGallery._currentPhoto < photoGallery._photos.length - 1
-              ? photoGallery._currentPhoto + 1
+            this._currentPhoto = this._currentPhoto < this._photos.length - 1
+              ? this._currentPhoto + 1
               : 0;
 
-            photoGallery.setCurrentPhoto(photoGallery._currentPhoto);
-        };
+            this.setCurrentPhoto(this._currentPhoto);
+        }.bind(this);
 
         this._onLeftArrowClick = function() {
-            photoGallery._currentPhoto = photoGallery._currentPhoto > 0
-              ? photoGallery._currentPhoto - 1
-              : photoGallery._photos.length - 1;
+            this._currentPhoto = this._currentPhoto > 0
+              ? this._currentPhoto - 1
+              : this._photos.length - 1;
 
-            photoGallery.setCurrentPhoto(photoGallery._currentPhoto);
-        };
+            this.setCurrentPhoto(this._currentPhoto);
+        }.bind(this);
 
         this._onDocumentKeyDown = function() {
             switch (event.keyCode) {
                 case KEY_CODE.ESC:
-                    photoGallery.galleryOverlay.classList.add('invisible');
+                    this.galleryOverlay.classList.add('invisible');
                     break;
                 case KEY_CODE.BUTTON_LEFT:
-                    photoGallery._onLeftArrowClick();
+                    this._onLeftArrowClick();
                     break;
                 case KEY_CODE.BUTTON_RIGHT:
-                    photoGallery._onRightArrowClick();
+                    this._onRightArrowClick();
                     break;
                 default:
                     break;
             }
-        };
+        }.bind(this);
     };
 
 
