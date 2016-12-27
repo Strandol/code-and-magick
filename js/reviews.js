@@ -94,14 +94,20 @@
     function renderReviews(reviews, page, replace) {
         setMoreRevBtnEnabled();
         if (replace) {
-            reviewsContainer.innerHTML = '';
+            while (filteredReviews.length) {
+                var reviewToRemove = filteredReviews.shift();
+                reviewsContainer.removeChild(reviewToRemove.el);
+                reviewToRemove.remove();
+            }
         }
 
         var from = page * PAGE_SIZE;
         var to = from + PAGE_SIZE;
 
-        reviews.slice(from, to).forEach(function(review) {
-            review.render(reviewsFragment);
+        reviewsCollection.slice(from, to).forEach(function(review) {
+            var view = new ReviewView({ model: review});
+            view.render(reviewsFragment);
+            filteredReviews.push(view);
         });
 
         reviewsContainer.appendChild(reviewsFragment);

@@ -26,7 +26,7 @@
         rating.classList.add(ratingStructure[this._data.rating]);
         comment.textContent = this._data.description;
 
-        reviewsFragment.appendChild(this.newReview);
+        reviewsFragment.appendChild(this.el);
 
         if (this._data.author.picture) {
             this.loadPicture(this, avatarStub);
