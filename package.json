@@ -12,9 +12,7 @@
     "url": "https://github.com/strandol/code-and-magick/issues"
   },
   "homepage": "https://github.com/strandol/code-and-magick",
-    "url": "https://github.com/Strandol/code-and-magick/issues"
-  },
-  "homepage": "https://github.com/Strandol/code-and-magick",
+  "url": "https://github.com/Strandol/code-and-magick/issues",
   "devDependencies": {
     "eslint": "2.4.0"
   },
