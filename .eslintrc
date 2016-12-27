@@ -10,6 +10,10 @@ extends:
   "eslint:recommended"
 
 rules:
+<<<<<<< HEAD
+=======
+  allowAfterThis: 2
+>>>>>>> a65016140deab63ef6daf70dbc397c8004812f6c
   indent: [2, 4, {SwitchCase: 1}]
   block-spacing: 2
   brace-style: [2, "1tbs"]

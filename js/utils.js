@@ -1,10 +1,7 @@
 'use strict';
 
 (function() {
-    var Utils = function() {
-    };
-
-    Utils.prototype.doesHaveParent = function(element) {
+    var doesHaveParent = function(element) {
         do {
             if (element.classList.contains('photogallery-image')) {
                 return true;
@@ -14,5 +11,7 @@
         return false;
     };
 
-    window.Utils = Utils;
+    window.utils = {
+        doesHaveParent: doesHaveParent
+    };
 })();
