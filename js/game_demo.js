@@ -15,8 +15,8 @@
     window.addEventListener('scroll', function() {
         setTimeout(function() {
             clouds.getBoundingClientRect().bottom < 0
-              ? clouds.removeEventListener('move', move)
-              : clouds.addEventListener('move', move);
+                ? clouds.removeEventListener('move', move)
+                : clouds.addEventListener('move', move);
         }, 100);
 
         clouds.dispatchEvent(moveClouds);

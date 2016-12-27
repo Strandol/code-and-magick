@@ -22,44 +22,51 @@
         this._photos = [];
         this._currentPhoto = 0;
 
-        this._onCloseButtonClick = function() {
-            this.galleryOverlay.classList.add('invisible');
-            this.hide();
-        }.bind(this);
+        this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
 
-        this._onRightArrowClick = function() {
-            this._currentPhoto = this._currentPhoto < this._photos.length - 1
-              ? this._currentPhoto + 1
-              : 0;
+        this._onRightArrowClick = this._onRightArrowClick.bind(this);
 
-            this.setCurrentPhoto(this._currentPhoto);
-        }.bind(this);
+        this._onLeftArrowClick = this._onLeftArrowClick.bind(this);
 
-        this._onLeftArrowClick = function() {
-            this._currentPhoto = this._currentPhoto > 0
-              ? this._currentPhoto - 1
-              : this._photos.length - 1;
-
-            this.setCurrentPhoto(this._currentPhoto);
-        }.bind(this);
-
-        this._onDocumentKeyDown = function() {
-            switch (event.keyCode) {
-                case KEY_CODE.ESC:
-                    this.galleryOverlay.classList.add('invisible');
-                    break;
-                case KEY_CODE.BUTTON_LEFT:
-                    this._onLeftArrowClick();
-                    break;
-                case KEY_CODE.BUTTON_RIGHT:
-                    this._onRightArrowClick();
-                    break;
-                default:
-                    break;
-            }
-        }.bind(this);
+        this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
     };
 
+    Gallery.prototype._onDocumentKeyDown = function() {
+        switch (event.keyCode) {
+            case KEY_CODE.ESC:
+                this.galleryOverlay.classList.add('invisible');
+                break;
+            case KEY_CODE.BUTTON_LEFT:
+                this._onLeftArrowClick();
+                break;
+            case KEY_CODE.BUTTON_RIGHT:
+                this._onRightArrowClick();
+                break;
+            default:
+                break;
+        }
+    };
+
+    Gallery.prototype._onLeftArrowClick = function() {
+        this._currentPhoto = this._currentPhoto > 0
+          ? this._currentPhoto - 1
+          : this._photos.length - 1;
+
+        this.setCurrentPhoto(this._currentPhoto);
+    };
+
+    Gallery.prototype._onRightArrowClick = function() {
+        this._currentPhoto = this._currentPhoto < this._photos.length - 1
+          ? this._currentPhoto + 1
+          : 0;
+
+        this.setCurrentPhoto(this._currentPhoto);
+    };
+
+    Gallery.prototype._onCloseButtonClick = function() {
+        this.galleryOverlay.classList.add('invisible');
+        this.hide();
+    };
 
     Gallery.prototype.setCurrentPhoto = function(index) {
         this._currentPhoto = index;
@@ -80,11 +87,10 @@
         newImage.src = this._photos[index];
 
         var currentImage = this.photoReview.querySelector('img');
-        if(currentImage !== null){
-            this.photoReview.replaceChild(newImage, currentImage)
-        } else {
-            this.photoReview.appendChild(newImage);
-        }
+
+        currentImage !== null
+            ? this.photoReview.replaceChild(newImage, currentImage)
+            : this.photoReview.appendChild(newImage);
     };
 
     Gallery.prototype.hide = function() {
@@ -130,16 +136,18 @@
 
         var element = event.target;
 
-        if (Utils.prototype.doesHaveParent(element)) {
-            if (!photoGallery) {
-                Gallery.prototype.createGallery();
-            }
-
-            var imageSrc = element.src;
-            var index = photoGallery._photos.indexOf(imageSrc);
-
-            photoGallery.setCurrentPhoto(index);
-            photoGallery.setHandlers();
+        if (!utils.doesHaveParent(element)) {
+            return;
         }
+
+        if (!photoGallery) {
+            Gallery.prototype.createGallery();
+        }
+
+        var imageSrc = element.src;
+        var index = photoGallery._photos.indexOf(imageSrc);
+
+        photoGallery.setCurrentPhoto(index);
+        photoGallery.setHandlers();
     });
 }());

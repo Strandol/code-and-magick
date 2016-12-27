@@ -65,6 +65,7 @@
 
     Review.prototype.unrender = function(reviewsList, index) {
         reviewsList.splice(index, 1);
+        
         if (this.avatar) {
             this.avatar.removeEventListener('error', this.loadFailure);
             this.avatar.removeEventListener('load', this.replaceImage);
