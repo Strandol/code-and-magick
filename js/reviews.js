@@ -23,6 +23,25 @@
     var photoGallery = null;
     var currentPage = 0;
 
+    loadReviews();
+
+    function loadReviews() {
+        reviewsCollection
+          .fetch({ timeout: REQUEST_FAILURE_TIMEOUT })
+          .success(function(loaded, state, jqXHR) {
+              var filter = localStorage.getItem('filter') || 'reviews-all';
+
+              loadedReviews = jqXHR.responseJSON;
+
+              initFilters();
+              setScrollEnabled();
+              setActiveFilter(filter);
+          })
+          .fail(function() {
+              showFailure();
+          });
+    }
+
     function initFilters() {
         reviewsFilter.addEventListener('click', function(event) {
             if (event.target.classList.contains('reviews-filter-item')) {
@@ -33,26 +52,11 @@
 
     function setActiveFilter(filter) {
         currentPage = 0;
-        getFilteredReviews(filter);
+        setFilteredReviews(filter);
         var btn = document.getElementById(filter);
         btn.checked = true;
         renderReviews(currentPage, true);
     }
-
-    reviewsCollection
-        .fetch({ timeout: REQUEST_FAILURE_TIMEOUT })
-        .success(function(loaded, state, jqXHR) {
-            var filter = localStorage.getItem('filter') || 'reviews-all';
-
-            loadedReviews = jqXHR.responseJSON;
-
-            initFilters();
-            setScrollEnabled();
-            setActiveFilter(filter);
-        })
-        .fail(function() {
-            showFailure();
-        });
 
     function renderReviews(page, replace) {
         setMoreRevBtnEnabled();
@@ -78,9 +82,8 @@
         reviewsContainer.appendChild(reviewsFragment);
     }
 
-    function getFilteredReviews(filter) {
-        filteredReviews = loadedReviews.slice(0);
-        filteredReviews = filteredReviews.map(function(data) {
+    function setFilteredReviews(filter) {
+        filteredReviews = loadedReviews.slice(0).map(function(data) {
             return new ReviewModel(data);
         });
 

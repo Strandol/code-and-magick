@@ -50,13 +50,13 @@
     Gallery.prototype._onLeftArrowClick = function() {
         this._currentPhoto = this._currentPhoto > 0
           ? this._currentPhoto - 1
-          : this._photosCollection.length - 1;
+          : this._photosCollection.models.length - 1;
 
         this.setCurrentPhoto(this._currentPhoto);
     };
 
     Gallery.prototype._onRightArrowClick = function() {
-        this._currentPhoto = this._currentPhoto < this._photosCollection.length - 1
+        this._currentPhoto = this._currentPhoto < this._photosCollection.models.length - 1
           ? this._currentPhoto + 1
           : 0;
 
@@ -71,21 +71,21 @@
     Gallery.prototype.setCurrentPhoto = function(index) {
         this._currentPhoto = index;
         this.currentPhotoNumberLabel.textContent = index + 1;
-        this.show(index);
+        this.show();
     };
 
     Gallery.prototype.setPhotos = function(photos) {
         [].map.call(photos, function(photo, index) {
             var photoUrl = photo.childNodes[0].src;
             photo = new PhotoModel(photoUrl, index);
-            photoGallery._photosCollection.push(photo);
+            photoGallery._photosCollection.models.push(photo);
             return;
         });
     };
 
     Gallery.prototype.show = function() {
-        var showedImage = new PhotoView();
-        showedImage.render();
+        var imageToShow = new PhotoView();
+        imageToShow.render();
     };
 
     Gallery.prototype.hide = function() {
