@@ -1,9 +1,9 @@
 'use strict';
 
 (function() {
-    var doesHaveParent = function(element) {
+    var doesHaveParent = function(selector, element) {
         do {
-            if (element.classList.contains('photogallery-image')) {
+            if (element.classList.contains(selector)) {
                 return true;
             }
             element = element.parentElement;

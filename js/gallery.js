@@ -19,7 +19,7 @@
         this.photoReview = this.galleryOverlay.querySelector('.overlay-gallery-preview');
         this.currentPhotoNumberLabel = this.galleryOverlay.querySelector('.preview-number-current');
 
-        this._photos = [];
+        this._photosCollection;
         this._currentPhoto = 0;
 
         this._onCloseButtonClick = this._onCloseButtonClick.bind(this);
@@ -50,13 +50,13 @@
     Gallery.prototype._onLeftArrowClick = function() {
         this._currentPhoto = this._currentPhoto > 0
           ? this._currentPhoto - 1
-          : this._photos.length - 1;
+          : this._photosCollection.length - 1;
 
         this.setCurrentPhoto(this._currentPhoto);
     };
 
     Gallery.prototype._onRightArrowClick = function() {
-        this._currentPhoto = this._currentPhoto < this._photos.length - 1
+        this._currentPhoto = this._currentPhoto < this._photosCollection.length - 1
           ? this._currentPhoto + 1
           : 0;
 
@@ -75,22 +75,17 @@
     };
 
     Gallery.prototype.setPhotos = function(photos) {
-        this._photos = [].map.call(photos, function(photo) {
-            return photo.childNodes[0].src;
+        [].map.call(photos, function(photo, index) {
+            var photoUrl = photo.childNodes[0].src;
+            photo = new PhotoModel(photoUrl, index);
+            photoGallery._photosCollection.push(photo);
+            return;
         });
     };
 
-    Gallery.prototype.show = function(index) {
-        var newImage = document.createElement('img');
-        newImage.width = IMAGE_WIDTH;
-        newImage.height = IMAGE_HEIGHT;
-        newImage.src = this._photos[index];
-
-        var currentImage = this.photoReview.querySelector('img');
-
-        currentImage !== null
-            ? this.photoReview.replaceChild(newImage, currentImage)
-            : this.photoReview.appendChild(newImage);
+    Gallery.prototype.show = function() {
+        var showedImage = new PhotoView();
+        showedImage.render();
     };
 
     Gallery.prototype.hide = function() {
@@ -103,6 +98,7 @@
     Gallery.prototype.createGallery = function() {
         var photos = document.querySelectorAll('.photogallery-image');
         photoGallery = new Gallery();
+        this._photosCollection = new PhotosCollection();
 
         this.setPhotos.call(photoGallery, photos);
     };
@@ -136,16 +132,17 @@
 
         var element = event.target;
 
-        if (!utils.doesHaveParent(element)) {
+        if (!utils.doesHaveParent('photogallery-image', element)) {
             return;
         }
 
-        if (!photoGallery) {
+        if (!window.photoGallery) {
             Gallery.prototype.createGallery();
         }
 
         var imageSrc = element.src;
-        var index = photoGallery._photos.indexOf(imageSrc);
+        var currentPhoto = photoGallery._photosCollection.where({url: imageSrc});
+        var index = currentPhoto[0].get('id');
 
         photoGallery.setCurrentPhoto(index);
         photoGallery.setHandlers();
