@@ -1,17 +1,8 @@
 'use strict';
 
 (function() {
-    var XHR_STATE = {
-        'UNSENT': 0,
-        'OPENED': 1,
-        'HEADERS_RECEIVED': 2,
-        'LOADING': 3,
-        'DONE': 4
-    };
-
     var PAGE_SIZE = 3;
     var REQUEST_FAILURE_TIMEOUT = 10000;
-    var REVIEWS_DATA_PATH = 'data/reviews.json';
     var PADDING_BOTTOM = 0;
 
     var reviewsFilter = document.querySelector('.reviews-filter');
@@ -19,21 +10,36 @@
     var reviewsList = document.querySelector('.reviews');
 
     var reviewsFragment = document.createDocumentFragment();
+
     var filteredReviews = [];
+    var renderedViews = [];
+    var loadedReviews;
+
+    var reviewsCollection = new ReviewsCollection();
 
     var footerElement = document.querySelector('footer');
     var moreReviewsButton = document.querySelector('.reviews-controls-more');
 
     var photoGallery = null;
     var currentPage = 0;
-    var reviews;
 
-    loadReviewsList();
+    loadReviews();
 
-    function loadReviewsList() {
-        initFilters();
-        setScrollEnabled();
-        loadReviews(loadData);
+    function loadReviews() {
+        reviewsCollection
+          .fetch({ timeout: REQUEST_FAILURE_TIMEOUT })
+          .success(function(loaded, state, jqXHR) {
+              var filter = localStorage.getItem('filter') || 'reviews-all';
+
+              loadedReviews = jqXHR.responseJSON;
+
+              initFilters();
+              setScrollEnabled();
+              setActiveFilter(filter);
+          })
+          .fail(function() {
+              showFailure();
+          });
     }
 
     function initFilters() {
@@ -46,119 +52,87 @@
 
     function setActiveFilter(filter) {
         currentPage = 0;
-        filteredReviews = getFilteredReviews(reviews, filter);
+        setFilteredReviews(filter);
         var btn = document.getElementById(filter);
         btn.checked = true;
-        renderReviews(filteredReviews, currentPage, true);
+        renderReviews(currentPage, true);
     }
 
-    function loadReviews(callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.timeout = REQUEST_FAILURE_TIMEOUT;
-        xhr.open('get', REVIEWS_DATA_PATH);
-
-        xhr.onreadystatechange = function(event) {
-            var loadedXhr = event.target;
-            switch (loadedXhr.readyState) {
-                case XHR_STATE.DONE:
-                    if (loadedXhr.status === 200) {
-                        var reviewsData = loadedXhr.response;
-                        reviewsList.classList.remove('reviews-list-loading');
-                        callback(JSON.parse(reviewsData));
-                    } else {
-                        showFailure();
-                    }
-                    break;
-                default:
-                    reviewsList.classList.add('reviews-list-loading');
-                    break;
-            }
-        };
-
-        xhr.ontimeout = function() {
-            showFailure();
-        };
-
-        xhr.send();
-    }
-
-    function loadData(loadedReviews) {
-        reviews = loadedReviews;
-        reviews = reviews.map(function(review) {
-            return new Review(review);
-        });
-        var filter = localStorage.getItem('filter') || 'reviews-all';
-        setActiveFilter(filter);
-    }
-
-    function renderReviews(reviews, page, replace) {
+    function renderReviews(page, replace) {
         setMoreRevBtnEnabled();
-        if (replace) {
-            reviewsContainer.innerHTML = '';
+
+        if (replace && reviewsContainer.children.length) {
+            while (renderedViews.length) {
+                var reviewToRemove = renderedViews.shift();
+                reviewsContainer.removeChild(reviewToRemove.el);
+                reviewToRemove.remove();
+            }
         }
 
         var from = page * PAGE_SIZE;
         var to = from + PAGE_SIZE;
 
-        reviews.slice(from, to).forEach(function(review) {
-            review.render(reviewsFragment);
+        reviewsCollection.slice(from, to).forEach(function(model) {
+            var view = new ReviewView({ model: model });
+            view.render(reviewsFragment);
+
+            renderedViews.push(view);
         });
 
         reviewsContainer.appendChild(reviewsFragment);
     }
 
-    function getFilteredReviews(reviews, filter) {
-        var filterReviews = reviews.slice(0);
+    function setFilteredReviews(filter) {
+        filteredReviews = loadedReviews.slice(0).map(function(data) {
+            return new ReviewModel(data);
+        });
 
         switch (filter) {
             case 'reviews-recent':
-                filterReviews.sort(function(rev1, rev2) {
-                    var date1 = new Date(rev1._data.date);
-                    var date2 = new Date(rev2._data.date);
+                filteredReviews.sort(function(rev1, rev2) {
+                    var date1 = new Date(rev1.get('date'));
+                    var date2 = new Date(rev2.get('date'));
                     return compareElements(date2, date1);
                 });
                 break;
             case 'reviews-good':
-                for (var i = 0; i < filterReviews.length; i++) {
-                    if (filterReviews[i]._data.rating < 3) {
-                        filterReviews[i].unrender(filterReviews, i);
+                for (var i = 0; i < filteredReviews.length; i++) {
+                    if (filteredReviews[i].get('rating') < 3) {
+                        filteredReviews.splice(i, 1);
                         i--;
                     }
                 }
 
-                filterReviews = filterReviews.sort(function(rev1, rev2) {
-                    return compareElements(rev2._data.rating, rev1._data.rating);
+                filteredReviews = filteredReviews.sort(function(rev1, rev2) {
+                    return compareElements(rev2.get('rating'), rev1.get('rating'));
                 });
 
                 break;
             case 'reviews-bad':
-                for (i = 0; i < filterReviews.length; i++) {
-                    if (filterReviews[i]._data.rating > 2) {
-                        filterReviews[i].unrender(filterReviews, i);
+                for (i = 0; i < filteredReviews.length; i++) {
+                    if (filteredReviews[i].get('rating') > 2) {
+                        filteredReviews.splice(i, 1);
                         i--;
                     }
                 }
 
-                filterReviews = filterReviews.sort(function(rev1, rev2) {
-                    return compareElements(rev1._data.rating, rev2._data.rating);
+                filteredReviews = filteredReviews.sort(function(rev1, rev2) {
+                    return compareElements(rev1.get('rating'), rev2.get('rating'));
                 });
 
                 break;
             case 'reviews-popular':
-                filterReviews = filterReviews
+                filteredReviews = filteredReviews
                   .sort(function(rev1, rev2) {
-                      return compareElements(rev2._data['review-rating'], rev1._data['review-rating']);
+                      return compareElements(rev2.get('review-rating'), rev1.get('review-rating'));
                   })
-                  .filter(function(review) {
-                      return review._data.rating >= 3;
-                  });
                 break;
             default:
                 break;
         }
 
+        reviewsCollection.reset(filteredReviews);
         localStorage.setItem('filter', filter);
-        return filterReviews;
     }
 
     function compareElements(elem1, elem2) {
@@ -172,12 +146,12 @@
     function setScrollEnabled() {
         window.addEventListener('scroll', function() {
             setTimeout(function() {
-                if (isBottomReached() && isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)) {
+                if (isBottomReached() && isNextPageAvaliable(filteredReviews, currentPage + 1, PAGE_SIZE)) {
                     currentPage++;
-                    renderReviews(filteredReviews, currentPage);
+                    renderReviews(currentPage);
                 }
 
-                if (!isNextPageAvaliable(filteredReviews, currentPage, PAGE_SIZE)) {
+                if (!isNextPageAvaliable(filteredReviews, currentPage + 1, PAGE_SIZE)) {
                     setMoreRevBtnDisabled();
                 }
             }, 100);
@@ -204,8 +178,12 @@
     }
 
     function displayMoreReviews() {
-        renderReviews(filteredReviews, currentPage);
-        currentPage++;
+        if (isNextPageAvaliable(filteredReviews, currentPage + 1, PAGE_SIZE)) {
+            currentPage++;
+            renderReviews(currentPage);
+        } else {
+            setMoreRevBtnDisabled();
+        }
     }
 
     window.photoGallery = photoGallery;
