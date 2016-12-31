@@ -75,9 +75,9 @@
     };
 
     Gallery.prototype.setPhotos = function(photos) {
-        [].map.call(photos, function(photo, index) {
+        [].forEach.call(photos, function(photo, i) {
             var photoUrl = photo.childNodes[0].src;
-            photo = new PhotoModel(photoUrl, index);
+            photo = new PhotoModel(photoUrl, i.toString());
             photoGallery._photosCollection.models.push(photo);
             return;
         });
