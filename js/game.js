@@ -377,18 +377,101 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var LETTER_SIZE = 16;
+      var LINE_SPACING = 20;
+      var LETTER_SPACING = 12;
+      var PADDING_RIGHT = 10;
+      var PADDING_TOP = 10;
+      var PADDING_LEFT = 10;
+      var SPACE_BETWEEN_SHADOW_AND_CANVAS = 10;
+
+      function countHeightOfCanvas(canvasHeight, canvasWidth, messageLength, message) {
+        if (messageLength > canvasWidth) {
+          var charIndex = 0;
+          var xNew = 0;
+
+          while (charIndex < message.length) {
+            for (var charLength = 0; (charLength < canvasWidth - PADDING_RIGHT && charIndex < message.length); charLength += LETTER_SIZE, charIndex++) {
+              continue;
+            }
+
+            xNew = 0;
+            canvasHeight += LETTER_SIZE + LINE_SPACING / 2;
+          }
+        } else {
+          canvasHeight = LETTER_SIZE + LINE_SPACING / 2;
+        }
+
+        return canvasHeight;
+      }
+
+      function drawScreen(canvas, canvasWidth, canvasHeight) {
+        canvas.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        canvas.ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+        canvas.ctx.beginPath();
+        canvas.ctx.moveTo(canvas.state.objects[0].x + 70, canvas.state.objects[0].y + 30 + SPACE_BETWEEN_SHADOW_AND_CANVAS);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + 90, canvas.state.objects[0].y - canvasHeight);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + canvasWidth + 10, canvas.state.objects[0].y - canvasHeight);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + canvasWidth + 10, canvas.state.objects[0].y + SPACE_BETWEEN_SHADOW_AND_CANVAS);
+        canvas.ctx.closePath();
+        canvas.ctx.stroke();
+        canvas.ctx.fill();
+
+        canvas.ctx.fillStyle = 'white';
+        canvas.ctx.strokeStyle = 'white';
+        canvas.ctx.beginPath();
+        canvas.ctx.moveTo(canvas.state.objects[0].x + 60, canvas.state.objects[0].y + 30);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + 80, canvas.state.objects[0].y - canvasHeight - SPACE_BETWEEN_SHADOW_AND_CANVAS);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + canvasWidth, canvas.state.objects[0].y - canvasHeight - SPACE_BETWEEN_SHADOW_AND_CANVAS);
+        canvas.ctx.lineTo(canvas.state.objects[0].x + canvasWidth, canvas.state.objects[0].y); // 0
+        canvas.ctx.closePath();
+        canvas.ctx.stroke();
+        canvas.ctx.fill();
+      }
+
+      function drawLetters(canvas, canvasWidth, canvasHeight) {
+        canvas.ctx.fillStyle = 'black';
+        canvas.ctx.font = 'bold 16px PT Mono';
+        canvas.ctx.textBaseline = 'hanging';
+
+        var xNew = 0, yNew = 0;
+
+        for (var height = 0, charIndex = 0; height < canvasHeight; height += LETTER_SIZE + LINE_SPACING / 2, yNew += LINE_SPACING, xNew = 0) {
+          for (var charLength = 0; (charLength < canvasWidth - PADDING_RIGHT && charIndex < message.length); xNew += LETTER_SPACING, charLength += LETTER_SIZE, charIndex++) {
+            canvas.ctx.fillText(message[charIndex], canvas.state.objects[0].x + 80 + PADDING_LEFT + xNew, canvas.state.objects[0].y - canvasHeight + yNew + PADDING_TOP);
+          }
+        }
+      }
+
+      function drawPauseCanvas(canvas, message, canvasWidth) {
+        var canvasHeight = 0;
+        var messageLength = message.length * LETTER_SIZE;
+
+        canvasHeight = countHeightOfCanvas(canvasHeight, canvasWidth, messageLength, message);
+
+        drawScreen(canvas, canvasWidth, canvasHeight);
+
+        drawLetters(canvas, canvasWidth, canvasHeight);
+      }
+
+      var message;
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          message = 'Вы победили!';
+          drawPauseCanvas(this, message, 250);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          message = 'Вы проиграли! Нажмите ПРОБЕЛ для рестарта.';
+          drawPauseCanvas(this, message, 330);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          message = 'Игра поставлена на паузуНажмите ПРОБЕЛ для продолжения игры.';
+          drawPauseCanvas(this, message, 390);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          message = 'Добро пожаловать в игру! Меня зовут Пендальф СинийИспользуйте клавиши стрелки! И Shift для выстрела фаерболом';
+          drawPauseCanvas(this, message, 410);
           break;
       }
     },
