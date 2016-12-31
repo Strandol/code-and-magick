@@ -2,9 +2,10 @@
 
 (function() {
     var PhotoModel = Backbone.Model.extend({
-        initialize: function(imageUrl, index) {
-            this.set('url', imageUrl);
-            this.set('id', index);
+        initialize: function(imageUrl, videoUrl, index) {
+            this.set('preview', imageUrl);
+            this.set('url', videoUrl);
+            this.set('id', parseInt(index, 10));
         }
     });
 

@@ -10,10 +10,10 @@
         render: function() {
             this.el.width = IMAGE_WIDTH;
             this.el.height = IMAGE_HEIGHT;
-            this.el.src = photoGallery._photosCollection.models[photoGallery._currentPhoto].get('url');
+            this.el.src = photoGallery._photosCollection.models[photoGallery._currentPhoto].get('preview');
 
-            var currentImage = photoGallery.photoReview.querySelector('img');
-
+            var currentImage = photoGallery.photoReview.querySelector('img') || photoGallery.photoReview.querySelector('video');
+          
             currentImage !== null
                 ? photoGallery.photoReview.replaceChild(this.el, currentImage)
                 : photoGallery.photoReview.appendChild(this.el);
