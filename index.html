@@ -2,17 +2,13 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <script src="http://underscorejs.ru/underscore.js"></script>
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="http://backbonejs.org/backbone.js"></script>
   <link href='https://fonts.googleapis.com/css?family=PT+Mono&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/main.css" media="screen" title="no title" charset="utf-8">
   <title>Code and Magick</title>
 </head>
 <body>
-  <header>
+    <header>
     <div class="header-clouds"></div>
-    <div class="header-wizard"></div>
     <div class="header-fence"></div>
     <div class="header-tree"></div>
 
@@ -68,7 +64,7 @@
       <span class="review-form-close">&times;</span>
 
       <fieldset class="review-form-group review-form-group-mark">
-        <span class="review-form-label">Оценка</label><br>
+        <span class="review-form-label">Оценка</span><br>
         <input type="radio" name="review-mark" id="review-mark-1" value="1"><label class="review-mark-label review-mark-label-1" for="review-mark-2">1</label>
         <input type="radio" name="review-mark" id="review-mark-2" value="2"><label class="review-mark-label review-mark-label-2" for="review-mark-2">2</label>
         <input type="radio" name="review-mark" id="review-mark-3" value="3" checked><label class="review-mark-label review-mark-label-3" for="review-mark-3">3</label>
@@ -102,7 +98,7 @@
     <div class="overlay-gallery-controls">
       <div class="overlay-gallery-control overlay-gallery-control-left"></div>
       <div class="overlay-gallery-preview">
-        <div class="overlay-gallery-preview-number"><span class="preview-number-current">1</span> из <span class="preview-number-total">5</span></div>
+        <div class="overlay-gallery-preview-number"><span class="preview-number-current">1</span> из <span class="preview-number-total">6</span></div>
       </div>
       <div class="overlay-gallery-control overlay-gallery-control-right"></div>
     </div>
@@ -119,9 +115,9 @@
           <span class="review-quiz-answer">Нет</span>
         </div>
 </template>
-
-  <script src="js/cookies.js"></script>
-  <script src="js/form_validation.js"></script>
+  <script src="js/underscore.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/backbone-min.js"></script>
   <script src="js/game_demo.js"></script>
   <script src="js/utils.js"></script>
   <script src="models/photo.js"></script>
@@ -134,6 +130,5 @@
   <script src="views/video.js"></script>
   <script src="js/reviews.js"></script>
   <script src="js/form.js"></script>
-
 </body>
 </html>

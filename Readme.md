@@ -1,4 +1,5 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
+## <a href="https://strandol.github.io/code-and-magick/">ДЕМО</a>
 
 * Студент: [Илья Коваленко]
 * Наставник: `Неизвестно`.
