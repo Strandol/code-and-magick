@@ -13,7 +13,7 @@
             this.el.src = photoGallery._photosCollection.models[photoGallery._currentPhoto].get('preview');
 
             var currentImage = photoGallery.photoReview.querySelector('img') || photoGallery.photoReview.querySelector('video');
-
+          
             currentImage !== null
                 ? photoGallery.photoReview.replaceChild(this.el, currentImage)
                 : photoGallery.photoReview.appendChild(this.el);
